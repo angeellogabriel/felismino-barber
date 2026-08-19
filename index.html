@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Felismino Barber — agendamento, clube e pagamento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Martian+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --verde-mata:#0C2A1E;
+  --verde-fundo:#132A1F;
+  --verde-vivo:#3FA06A;
+  --verde-claro:#5FD08C;
+  --verde-tinta:#1A5C3C;
+  --cimento:#DFE1DC;
+  --papel:#F3F5F1;
+  --grafite:#23272A;
+  --cinza-texto:#5C635E;
+  --borda:#E0E5DC;
+  --alerta:#C2612F;
+  --r-lg:26px; --r-md:18px; --r-sm:13px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cimento);color:var(--grafite);font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.disp{font-family:'Bricolage Grotesque',sans-serif;margin:0;letter-spacing:-1.4px}
+.mono{font-family:'Martian Mono',monospace;text-transform:uppercase;letter-spacing:1.4px}
+a{color:inherit}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--verde-claro);outline-offset:3px;border-radius:6px}
+.wrap{width:min(1240px,100% - 40px);margin-inline:auto}
+
+/* ---------- HEADER ---------- */
+.hdr{background:var(--verde-mata);position:sticky;top:0;z-index:40}
+.hdrin{display:flex;align-items:center;gap:22px;height:84px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
+.logomark{width:42px;height:42px;border-radius:12px;background:linear-gradient(150deg,#F4F5F3,#B6BCB5 46%,#8E958D 56%,#E8EAE5);display:grid;place-items:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:21px;color:var(--verde-mata)}
+.logotype{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;color:#F1F3EF;line-height:1}
+.logosub{font-family:'Martian Mono';font-size:8.5px;letter-spacing:3px;color:#7FA98F;text-transform:uppercase;margin-top:4px}
+.nav{display:flex;gap:24px;margin-left:20px}
+.nav button{background:none;border:0;color:#C8D6CC;font-size:15px;font-weight:500;cursor:pointer;padding:6px 0;border-bottom:2px solid transparent}
+.nav button:hover{color:#fff}
+.nav button.on{color:#fff;border-color:var(--verde-vivo)}
+.hdrright{margin-left:auto;display:flex;align-items:center;gap:18px}
+.status{font-family:'Martian Mono';font-size:9.5px;letter-spacing:1px;color:#B9DCC2;text-transform:uppercase;display:flex;align-items:center;gap:9px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--verde-claro);box-shadow:0 0 0 4px rgba(95,208,140,.18)}
+.menubtn{display:none;background:none;border:1.5px solid rgba(255,255,255,.24);border-radius:12px;width:44px;height:44px;color:#DDE7DF;font-size:20px;cursor:pointer}
+
+/* ---------- BOTÕES ---------- */
+.btn{border:0;border-radius:999px;font-weight:700;font-size:15px;padding:14px 26px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s ease,filter .12s ease}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+.btn:active{transform:translateY(0)}
+.btn-g{background:var(--verde-vivo);color:#06241a}
+.btn-w{background:#F1F3EF;color:var(--verde-mata)}
+.btn-dark{background:var(--verde-mata);color:#fff}
+.btn-ghost{background:none;border:1.5px solid rgba(241,243,239,.32);color:#E6EBE5}
+.btn-out{background:none;border:1.5px solid rgba(12,42,30,.28);color:var(--verde-mata)}
+.btn-block{width:100%;border-radius:14px;padding:17px 0;font-size:16px}
+.btn[disabled]{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ---------- HERO ---------- */
+.hero{background:var(--verde-mata);padding:64px 0 88px;position:relative;overflow:hidden}
+.pole{position:absolute;left:0;top:0;width:26px;height:100%;opacity:.85;background:repeating-linear-gradient(135deg,#1A5C3C 0 14px,#123f2b 14px 28px,#C9CFC8 28px 42px,#9AA29A 42px 56px)}
+.glow{position:absolute;right:-160px;top:-140px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(63,160,106,.30),rgba(12,42,30,0) 68%)}
+.heroin{display:grid;grid-template-columns:1fr 492px;gap:48px;align-items:start;position:relative}
+.eyebrow{font-family:'Martian Mono';font-size:10px;letter-spacing:3px;color:#7FBF97;text-transform:uppercase;margin-bottom:24px}
+.hero h1{font-weight:800;font-size:clamp(40px,5.2vw,74px);line-height:.95;letter-spacing:-3.2px;color:#F4F6F2}
+.hero h1 em{font-style:normal;color:var(--verde-claro)}
+.lead{color:#AFC2B5;font-size:18px;line-height:1.6;margin:24px 0 0;max-width:520px}
+.ctas{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+.stats{display:flex;gap:46px;margin-top:52px;border-top:1px solid rgba(255,255,255,.12);padding-top:24px;flex-wrap:wrap}
+.statnum{font-family:'Bricolage Grotesque';font-weight:700;font-size:30px;color:#F4F6F2}
+.statlbl{font-family:'Martian Mono';font-size:9px;letter-spacing:1.4px;color:#7FA98F;text-transform:uppercase;margin-top:7px}
+
+/* ---------- PAINEL AGENDA ---------- */
+.panel{background:var(--papel);border-radius:var(--r-lg);padding:24px;box-shadow:0 40px 80px rgba(0,0,0,.34);position:relative}
+.badge{position:absolute;left:-14px;top:-16px;background:var(--verde-claro);color:#06241a;font-family:'Martian Mono';font-size:9px;letter-spacing:1.2px;text-transform:uppercase;padding:10px 13px;border-radius:10px;font-weight:600;box-shadow:0 12px 26px rgba(0,0,0,.3)}
+.ptop{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.ptitle{font-family:'Bricolage Grotesque';font-weight:700;font-size:21px;color:var(--verde-mata)}
+.pill{margin-left:auto;font-family:'Martian Mono';font-size:9.5px;letter-spacing:1.2px;color:var(--cinza-texto);text-transform:uppercase;background:#E3E7DF;border-radius:999px;padding:7px 12px}
+.chips{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.chip{font-family:'Martian Mono';font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;padding:8px 12px;border-radius:999px;background:#E6E9E2;color:#4A524C;border:0;cursor:pointer}
+.chip.on{background:var(--verde-mata);color:#EAF3EC}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.slot{background:#fff;border:1.5px solid var(--borda);border-radius:14px;padding:11px 0 11px 12px;text-align:left;cursor:pointer;transition:border-color .12s ease}
+.slot:hover:not(.off){border-color:var(--verde-vivo)}
+.slot .t{font-family:'Martian Mono';font-weight:600;font-size:14.5px;color:#12231A}
+.slot .p{font-family:'Martian Mono';font-size:9px;color:#6C736C;margin-top:6px}
+.slot.off{background:#E9EBE6;border-color:#E9EBE6;cursor:not-allowed}
+.slot.off .t{color:#A9AFA8;text-decoration:line-through}
+.slot.off .p{color:#B3B8B1}
+.slot.sel{background:var(--verde-mata);border-color:var(--verde-mata);box-shadow:0 10px 22px rgba(12,42,30,.26)}
+.slot.sel .t{color:#fff}
+.slot.sel .p{color:#7FD3A0}
+.sum{background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:16px 18px;margin-top:12px;display:flex;align-items:center;gap:12px}
+.sumtxt{font-size:14.5px;color:#3A423C;line-height:1.45}
+.sumtxt b{color:var(--verde-mata)}
+.sumprice{margin-left:auto;font-family:'Bricolage Grotesque';font-weight:700;font-size:26px;color:var(--verde-mata)}
+.fine{text-align:center;font-family:'Martian Mono';font-size:8.5px;letter-spacing:1.2px;color:#7C837C;text-transform:uppercase;margin-top:12px}
+
+/* ---------- MARQUEE ---------- */
+.marq{background:#C9CFC8;height:54px;overflow:hidden;white-space:nowrap}
+.marqin{display:inline-block;line-height:54px;font-family:'Martian Mono';font-size:11.5px;letter-spacing:4px;color:#3A423C;text-transform:uppercase;animation:slide 34s linear infinite}
+.marqin i{color:var(--verde-tinta);margin:0 20px;font-style:normal}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- SEÇÕES ---------- */
+.sec{padding:92px 0}
+.sec.tight{padding-top:0}
+.sechead{display:flex;align-items:flex-end;gap:40px;margin-bottom:40px;flex-wrap:wrap}
+.kicker{font-family:'Martian Mono';font-size:9.5px;letter-spacing:3px;color:var(--verde-tinta);text-transform:uppercase;margin-bottom:14px}
+.sec h2{font-weight:800;font-size:clamp(30px,3.6vw,48px);line-height:1.02;color:#132A1F}
+.sechead .right{margin-left:auto;max-width:340px;font-size:15px;color:var(--cinza-texto);line-height:1.6;text-align:right}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--papel);border:1px solid #E5E8E1;border-radius:22px;padding:24px;display:flex;flex-direction:column}
+.cnum{font-family:'Martian Mono';font-size:9px;letter-spacing:2px;color:#8A918A;text-transform:uppercase}
+.cname{font-family:'Bricolage Grotesque';font-weight:700;font-size:24px;color:#132A1F;margin-top:44px}
+.cdesc{font-size:14.5px;color:var(--cinza-texto);line-height:1.55;margin-top:10px;flex:1}
+.cfoot{display:flex;align-items:center;gap:10px;border-top:1px solid #E1E5DC;padding-top:16px;margin-top:18px}
+.cprice{font-family:'Bricolage Grotesque';font-weight:700;font-size:23px;color:var(--verde-tinta)}
+.cdur{font-family:'Martian Mono';font-size:9px;letter-spacing:1.2px;color:#8A918A;text-transform:uppercase}
+.cgo{margin-left:auto;width:38px;height:38px;border-radius:50%;background:var(--verde-mata);color:#fff;border:0;cursor:pointer;font-size:16px}
+
+/* ---------- CLUBE ---------- */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.plan{background:var(--papel);border:1px solid #E5E8E1;border-radius:22px;padding:26px;display:flex;flex-direction:column}
+.plan.destaque{background:var(--verde-fundo);border-color:var(--verde-fundo);color:#F4F6F2;position:relative;overflow:hidden}
+.plan.destaque .plname,.plan.destaque .plprice{color:#F4F6F2}
+.plan.destaque .plrow{color:#C6D8CC}
+.plan.destaque .tick{background:rgba(95,208,140,.2);color:var(--verde-claro)}
+.plan-tag{font-family:'Martian Mono';font-size:8.5px;letter-spacing:1.6px;text-transform:uppercase;color:#06241a;background:var(--verde-claro);border-radius:8px;padding:6px 9px;align-self:flex-start;margin-bottom:16px}
+.plname{font-family:'Bricolage Grotesque';font-weight:700;font-size:25px;color:#132A1F}
+.plprice{font-family:'Bricolage Grotesque';font-weight:800;font-size:46px;color:var(--verde-mata);margin-top:10px;letter-spacing:-2.4px}
+.plprice small{font-family:'Public Sans';font-weight:600;font-size:15px;letter-spacing:0;color:#8A918A}
+.plrow{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;color:#3A423C;margin-top:13px;line-height:1.45}
+.tick{width:20px;height:20px;border-radius:50%;background:#D8EEDF;color:var(--verde-tinta);font-size:11px;display:grid;place-items:center;font-weight:700;flex-shrink:0;margin-top:1px}
+.plfoot{margin-top:22px}
+
+/* ---------- BARBEIROS / AVALIAÇÕES ---------- */
+.bhead{display:flex;align-items:center;gap:16px}
+.ava{width:72px;height:72px;border-radius:20px;background:linear-gradient(150deg,#EDEFEA,#B6BCB5 48%,#8E958D 58%,#E8EAE5);display:grid;place-items:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:25px;color:var(--verde-mata);flex-shrink:0}
+.bname{font-family:'Bricolage Grotesque';font-weight:700;font-size:23px;color:#132A1F}
+.brole{font-family:'Martian Mono';font-size:9px;letter-spacing:1.2px;color:var(--verde-tinta);text-transform:uppercase;margin-top:7px}
+.bnext{display:flex;align-items:center;gap:12px;margin-top:22px;background:#fff;border:1.5px solid var(--borda);border-radius:14px;padding:13px 15px}
+.lbl{font-family:'Martian Mono';font-size:8.5px;letter-spacing:1.2px;color:#8A918A;text-transform:uppercase}
+.bnexttime{font-family:'Martian Mono';font-weight:600;font-size:15.5px;color:var(--verde-mata);margin-top:6px}
+.starz{color:var(--verde-tinta);font-size:14px;letter-spacing:3px}
+.rtxt{font-size:15.5px;line-height:1.6;color:#2E3630;margin-top:12px;flex:1}
+.rwho{font-family:'Martian Mono';font-size:9px;letter-spacing:1.2px;color:#8A918A;text-transform:uppercase;border-top:1px solid #E1E5DC;padding-top:14px;margin-top:16px}
+
+/* ---------- MODAL ---------- */
+.overlay{position:fixed;inset:0;background:rgba(8,24,17,.62);backdrop-filter:blur(3px);z-index:60;display:grid;place-items:center;padding:20px;overflow-y:auto}
+.overlay[hidden]{display:none}
+.modal{background:var(--papel);border-radius:26px;width:min(620px,100%);padding:28px;position:relative;box-shadow:0 40px 90px rgba(0,0,0,.4);margin:auto}
+.modal h3{font-size:27px;color:var(--verde-mata)}
+.close{position:absolute;right:18px;top:18px;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--borda);background:#fff;cursor:pointer;font-size:17px;color:#4A524C}
+.steps{display:flex;gap:6px;margin:18px 0 22px}
+.step{flex:1;height:4px;border-radius:999px;background:#E0E5DC}
+.step.done{background:var(--verde-vivo)}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:15px 17px;margin-bottom:9px;cursor:pointer}
+.opt:hover{border-color:var(--verde-vivo)}
+.opt.sel{border-color:var(--verde-mata);background:#fff;box-shadow:0 8px 20px rgba(12,42,30,.1)}
+.optname{font-weight:700;font-size:16px;color:#132A1F}
+.optsub{font-family:'Martian Mono';font-size:8.5px;letter-spacing:1.1px;color:#8A918A;text-transform:uppercase;margin-top:6px}
+.optprice{margin-left:auto;font-family:'Bricolage Grotesque';font-weight:700;font-size:20px;color:var(--verde-tinta)}
+.field{margin-bottom:12px}
+.field label{display:block;font-family:'Martian Mono';font-size:8.5px;letter-spacing:1.2px;color:#7C837C;text-transform:uppercase;margin-bottom:7px}
+.field input,.field select{width:100%;border:1.5px solid var(--borda);border-radius:13px;padding:14px 15px;font-size:15.5px;font-family:inherit;background:#fff;color:var(--grafite)}
+.field input:focus{outline:0;border-color:var(--verde-vivo)}
+.paygrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:14px}
+.paybtn{background:#fff;border:1.5px solid var(--borda);border-radius:14px;padding:14px;cursor:pointer;text-align:left}
+.paybtn.sel{border-color:var(--verde-mata);background:var(--verde-mata);color:#fff}
+.paybtn.sel .lbl{color:#7FD3A0}
+.paybtn b{font-size:15px}
+.qrbox{width:200px;height:200px;margin:0 auto;background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:12px;display:grid;place-items:center}
+.qrbox img,.qrbox canvas{display:block}
+.qrfallback{font-size:12.5px;color:var(--cinza-texto);text-align:center;line-height:1.5;padding:10px}
+.copiacola{font-family:'Martian Mono';font-size:9px;color:#6C736C;background:#EDEFE9;border-radius:12px;padding:12px;word-break:break-all;margin-top:14px;line-height:1.5}
+.modalfoot{display:flex;gap:10px;margin-top:20px}
+.ok{text-align:center;padding:8px 0 0}
+.okmark{width:64px;height:64px;border-radius:50%;background:#D8EEDF;color:var(--verde-tinta);display:grid;place-items:center;font-size:30px;margin:0 auto 18px}
+
+/* ---------- CONTA / PAINEL ---------- */
+.appsec{padding:44px 0 90px}
+.pagehead{display:flex;align-items:flex-end;gap:20px;margin-bottom:28px;flex-wrap:wrap}
+.pagehead h2{font-size:38px;color:#132A1F}
+.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.tab{background:#E6E9E2;border:0;border-radius:999px;padding:10px 16px;font-family:'Martian Mono';font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:#4A524C;cursor:pointer}
+.tab.on{background:var(--verde-mata);color:#fff}
+.two{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;align-items:start}
+.box{background:var(--papel);border:1px solid #E5E8E1;border-radius:22px;padding:24px}
+.box h4{font-size:20px;color:#132A1F;margin-bottom:4px}
+.boxsub{font-size:14px;color:var(--cinza-texto);margin-bottom:18px}
+.item{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:15px 17px;margin-bottom:9px}
+.itemtime{font-family:'Martian Mono';font-weight:600;font-size:15px;color:var(--verde-mata);width:64px;flex-shrink:0}
+.itemname{font-weight:700;font-size:15.5px;color:#132A1F}
+.itemsub{font-family:'Martian Mono';font-size:8.5px;letter-spacing:1.1px;color:#8A918A;text-transform:uppercase;margin-top:6px}
+.tag{margin-left:auto;font-family:'Martian Mono';font-size:8.5px;letter-spacing:1.1px;text-transform:uppercase;padding:7px 11px;border-radius:999px;flex-shrink:0}
+.tag.pago{background:#D8EEDF;color:var(--verde-tinta)}
+.tag.pend{background:#F6E2D2;color:var(--alerta)}
+.tag.hoje{background:var(--verde-mata);color:#fff}
+.tag.neutro{background:#E6E9E2;color:#4A524C}
+.aviso{display:flex;gap:14px;align-items:center;background:#FBEDE2;border:1.5px solid #EDD3BC;border-radius:18px;padding:18px 20px;margin-bottom:18px}
+.avisotxt{font-size:14.5px;color:#5E4227;line-height:1.5}
+.avisotxt b{color:#7A4A1E}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi{background:var(--papel);border:1px solid #E5E8E1;border-radius:18px;padding:20px}
+.kpinum{font-family:'Bricolage Grotesque';font-weight:800;font-size:32px;color:var(--verde-mata);letter-spacing:-1.6px}
+.kpilbl{font-family:'Martian Mono';font-size:8.5px;letter-spacing:1.2px;color:#8A918A;text-transform:uppercase;margin-top:8px;line-height:1.5}
+.rule{display:flex;gap:14px;background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:16px 18px;margin-bottom:9px;align-items:flex-start}
+.rulewhen{font-family:'Martian Mono';font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#fff;background:var(--verde-tinta);border-radius:8px;padding:7px 9px;flex-shrink:0;margin-top:2px}
+.ruletxt{font-size:14.5px;color:#3A423C;line-height:1.5}
+.ruletxt b{color:#132A1F}
+.msg{font-family:'Public Sans';font-size:13.5px;color:#4A524C;background:#EDEFE9;border-left:3px solid var(--verde-vivo);border-radius:0 10px 10px 0;padding:11px 14px;margin-top:9px;line-height:1.5}
+
+/* ---------- FOOTER ---------- */
+.ftr{background:var(--verde-mata);padding:66px 0 30px;color:#C2D2C7}
+.ftrin{display:grid;grid-template-columns:1.3fr repeat(3,1fr);gap:36px}
+.fbig{font-family:'Bricolage Grotesque';font-weight:800;font-size:32px;color:#F4F6F2;line-height:1.05;margin-bottom:22px}
+.ftitle{font-family:'Martian Mono';font-size:9px;letter-spacing:2px;color:#5F8A70;text-transform:uppercase;margin-bottom:14px}
+.ftxt{font-size:15px;line-height:1.85}
+.fbot{border-top:1px solid rgba(255,255,255,.12);margin-top:44px;padding-top:20px;display:flex;gap:20px;font-family:'Martian Mono';font-size:8.5px;letter-spacing:1.4px;color:#6D8C79;text-transform:uppercase;flex-wrap:wrap}
+.fbot span:last-child{margin-left:auto}
+
+/* ---------- TOAST ---------- */
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--verde-mata);color:#EAF3EC;padding:15px 22px;border-radius:14px;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.32);opacity:0;pointer-events:none;transition:all .22s ease;z-index:80}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- MOBILE ---------- */
+.dock{display:none}
+@media (max-width:980px){
+  .heroin{grid-template-columns:1fr}
+  .grid4,.grid3,.plans,.kpis{grid-template-columns:repeat(2,1fr)}
+  .two,.ftrin{grid-template-columns:1fr}
+  .sechead .right{text-align:left;margin-left:0}
+}
+@media (max-width:640px){
+  .nav{display:none}
+  .nav.open{display:flex;position:absolute;top:84px;left:0;right:0;background:var(--verde-mata);flex-direction:column;gap:0;padding:8px 20px 20px;margin:0;z-index:50}
+  .nav.open button{text-align:left;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+  .menubtn{display:block}
+  .status,.hdrright .btn{display:none}
+  .grid4,.grid3,.plans,.kpis{grid-template-columns:1fr}
+  .slots{grid-template-columns:repeat(3,1fr)}
+  .sec{padding:60px 0}
+  .stats{gap:28px}
+  .dock{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--verde-mata);border-top:1px solid rgba(255,255,255,.14);padding:12px 18px calc(12px + env(safe-area-inset-bottom));align-items:center;gap:14px;z-index:50}
+  .docklbl{font-family:'Martian Mono';font-size:8px;letter-spacing:1px;color:#B9DCC2;text-transform:uppercase}
+  .docknext{font-family:'Bricolage Grotesque';font-weight:700;font-size:15px;color:#fff;margin-top:5px}
+  body{padding-bottom:84px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="wrap hdrin">
+    <a class="logo" href="#" onclick="go('home');return false">
+      <div class="logomark">F</div>
+      <div><div class="logotype">FELISMINO</div><div class="logosub">Barber</div></div>
+    </a>
+    <nav class="nav" id="nav">
+      <button data-view="home" onclick="go('home')">Início</button>
+      <button data-view="servicos" onclick="go('servicos')">Serviços</button>
+      <button data-view="clube" onclick="go('clube')">Clube</button>
+      <button data-view="conta" onclick="go('conta')">Minha conta</button>
+      <button data-view="painel" onclick="go('painel')">Painel da barbearia</button>
+    </nav>
+    <div class="hdrright">
+      <div class="status"><span class="dot"></span><span id="statusTxt">Aberto até 20h</span></div>
+      <button class="btn btn-g" onclick="abrirAgendamento()">Agendar agora</button>
+      <button class="menubtn" onclick="document.getElementById('nav').classList.toggle('open')" aria-label="Abrir menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main id="view"></main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftrin">
+      <div>
+        <div class="fbig">Seu horário<br>está aberto.</div>
+        <button class="btn btn-w" onclick="abrirAgendamento()">Agendar em 30 segundos</button>
+      </div>
+      <div><div class="ftitle">Horários</div><div class="ftxt">Terça a sexta · 9h às 20h<br>Sábado · 8h às 19h<br>Domingo e segunda · fechado</div></div>
+      <div><div class="ftitle">Onde ficamos</div><div class="ftxt">Av. das Palmeiras, 480 — Centro<br>WhatsApp (00) 00000-0000<br>@felisminobarber</div></div>
+      <div><div class="ftitle">Pagamento</div><div class="ftxt">Pix, crédito, débito e carteira digital.<br>Assinatura com cobrança automática.<br>Pagou online? É só chegar e sentar.</div></div>
+    </div>
+    <div class="fbot"><span>Felismino Barber © 2026</span><span>Agendamento · Pagamento online · Clube de assinatura</span></div>
+  </div>
+</footer>
+
+<div class="dock">
+  <div><div class="docklbl">Próximo horário livre</div><div class="docknext" id="dockNext">Hoje, 13:40</div></div>
+  <button class="btn btn-g" style="margin-left:auto;padding:13px 20px" onclick="abrirAgendamento()">Agendar</button>
+</div>
+
+<div class="overlay" id="overlay" hidden onclick="if(event.target===this)fecharModal()">
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   FELISMINO BARBER — protótipo funcional
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   CONFIGURAÇÃO — o dono edita só este bloco. Nada aqui custa dinheiro:
+   a chave Pix é a da própria conta e o WhatsApp é o número normal.
+   --------------------------------------------------------------------- */
+const CONFIG = {
+  chavePix: 'felismino@email.com',        // e-mail, CPF/CNPJ, telefone ou aleatória
+  nomeRecebedor: 'Felismino Barber',
+  cidadeRecebedor: 'Canaa dos Carajas',   // sem acento, até 15 caracteres
+  whatsapp: '5594991234567',              // 55 + DDD + número, só dígitos
+  endereco: 'Av. das Palmeiras, 480 — Centro'
+};
+
+const BRL = n => 'R$ ' + n.toFixed(2).replace('.', ',');
+const hoje = new Date(2026, 7, 19); // 19/08/2026
+const DIAS = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+const MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const dataCurta = d => `${String(d.getDate()).padStart(2,'0')} ${MES[d.getMonth()]}`;
+const maisDias = (d, n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+
+const db = {
+  servicos: [
+    {id:'social', nome:'Corte social', desc:'Máquina, tesoura e acabamento na navalha. O corte de todo dia, bem feito.', preco:45, min:40, tag:'máquina + tesoura'},
+    {id:'combo', nome:'Corte + barba', desc:'Corte completo, toalha quente e barba na navalha. Reserve com folga.', preco:70, min:70, tag:'o combo da casa'},
+    {id:'barba', nome:'Barba terapia', desc:'Vapor, óleo, navalha e balm gelado no final. Só a barba, do jeito certo.', preco:40, min:35, tag:'vapor + navalha'},
+    {id:'pigmento', nome:'Pigmentação', desc:'Preenche falhas e marca o contorno. Dura de duas a três semanas.', preco:55, min:45, tag:'disfarça falhas'}
+  ],
+  barbeiros: [
+    {id:'felismino', nome:'Felismino Silva', ini:'FS', papel:'Fundador · navalha e barba'},
+    {id:'kaua', nome:'Kauã Ribeiro', ini:'KR', papel:'Degradê e freestyle'},
+    {id:'dede', nome:'Dedé Martins', ini:'DM', papel:'Clássico e infantil'}
+  ],
+  planos: [
+    {id:'essencial', nome:'Essencial', preco:89, cortes:'2 cortes por mês', itens:['2 cortes por mês','Agenda com 7 dias de antecedência','5% off em pomadas e óleos']},
+    {id:'completo', nome:'Completo', preco:129, cortes:'4 cortes por mês', destaque:true, itens:['4 cortes por mês','2 barbas inclusas','Agenda prioritária às sextas e sábados','10% off em pomadas e óleos']},
+    {id:'ilimitado', nome:'Ilimitado', preco:189, cortes:'Cortes ilimitados', itens:['Cortes e barbas ilimitados','Prioridade máxima na agenda','Traz um convidado por mês','15% off na loja']}
+  ],
+  // agenda: chave = 'YYYY-MM-DD' -> horários ocupados por barbeiro
+  ocupados: {
+    '2026-08-19': {felismino:['09:00','10:20','16:00'], kaua:['09:40','14:20'], dede:['13:00','15:40']},
+    '2026-08-20': {felismino:['11:00'], kaua:['09:00','09:40'], dede:['16:40']},
+    '2026-08-21': {felismino:['09:00','09:40','10:20'], kaua:['13:00'], dede:[]}
+  },
+  horarios: ['09:00','09:40','10:20','11:00','13:00','13:40','14:20','15:00','15:40','16:20','17:00','17:40'],
+  // cliente logado (demo)
+  cliente: {nome:'Rafael Andrade', tel:'(94) 99123-4567', email:'rafael@email.com'},
+  agendamentos: [
+    {id:1, servico:'combo', barbeiro:'felismino', data:'2026-08-22', hora:'10:20', pago:true, valor:70, meio:'Pix'},
+    {id:2, servico:'social', barbeiro:'kaua', data:'2026-07-30', hora:'15:00', pago:true, valor:45, meio:'Crédito'}
+  ],
+  assinatura: {
+    ativa: true, plano:'completo', desde:'2026-03-14', proximaCobranca:'2026-08-22',
+    valor:129, meio:'Pix automático', status:'pendente', usados:2
+  },
+  // base da barbearia para o painel
+  clientesBase: [
+    {nome:'Rafael Andrade', plano:'Completo', venc:'22 ago', status:'pendente'},
+    {nome:'Everton Pires', plano:'Ilimitado', venc:'25 ago', status:'em dia'},
+    {nome:'Juliana Moraes', plano:'Essencial', venc:'12 ago', status:'atrasado'},
+    {nome:'Caio Bezerra', plano:'Completo', venc:'28 ago', status:'em dia'},
+    {nome:'Silas Rocha', plano:'Completo', venc:'02 set', status:'em dia'}
+  ]
+};
+
+const chaveData = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const srv = id => db.servicos.find(s=>s.id===id);
+const brb = id => db.barbeiros.find(b=>b.id===id);
+const pln = id => db.planos.find(p=>p.id===id);
+
+function livresDoDia(dataKey, barbeiroId){
+  const dia = db.ocupados[dataKey] || {};
+  return db.horarios.map(h => {
+    const donos = db.barbeiros.filter(b => !(dia[b.id]||[]).includes(h));
+    const alvo = barbeiroId ? donos.filter(b=>b.id===barbeiroId) : donos;
+    return {hora:h, livre: alvo.length>0, barbeiro: alvo[0]};
+  });
+}
+function proximoLivre(barbeiroId){
+  for(let i=0;i<7;i++){
+    const d = maisDias(hoje,i);
+    const s = livresDoDia(chaveData(d), barbeiroId).find(x=>x.livre);
+    if(s) return {dia:i===0?'Hoje':(i===1?'Amanhã':DIAS[d.getDay()]), hora:s.hora, data:d};
+  }
+  return null;
+}
+
+/* ---------------- TOAST ---------------- */
+let toastT;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(()=>el.classList.remove('on'), 3200);
+}
+
+/* ---------------- ROTEADOR ---------------- */
+let viewAtual = 'home';
+function go(v){
+  viewAtual = v;
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on', b.dataset.view===v));
+  document.getElementById('nav').classList.remove('open');
+  document.getElementById('view').innerHTML = VIEWS[v]();
+  window.scrollTo({top:0, behavior:'instant'});
+  if(v==='home') pintarSlots();
+}
+
+/* ================= VIEW: HOME ================= */
+const VIEWS = {};
+VIEWS.home = () => {
+  const p = proximoLivre();
+  return `
+  <section class="hero">
+    <div class="pole"></div><div class="glow"></div>
+    <div class="wrap heroin">
+      <div>
+        <div class="eyebrow">Agenda ao vivo · ${DIAS[hoje.getDay()]}, ${hoje.getDate()} de agosto</div>
+        <h1>Escolha o horário,<br>pague no site,<br><em>sente na cadeira.</em></h1>
+        <p class="lead">Nada de fila nem de “me chama depois”. Você vê a agenda real de cada barbeiro, reserva em 30 segundos e paga por Pix ou cartão. Chegou, é só sentar.</p>
+        <div class="ctas">
+          <button class="btn btn-g" onclick="abrirAgendamento()">Ver horários de hoje</button>
+          <button class="btn btn-ghost" onclick="go('clube')">Conhecer o clube</button>
+        </div>
+        <div class="stats">
+          <div><div class="statnum">4,9</div><div class="statlbl">312 avaliações</div></div>
+          <div><div class="statnum">11 anos</div><div class="statlbl">de porta aberta</div></div>
+          <div><div class="statnum">${db.clientesBase.length + 47}</div><div class="statlbl">assinantes do clube</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="badge">Reserva em 30s</div>
+        <div class="ptop"><div class="ptitle">Agenda de hoje</div><div class="pill">${DIAS[hoje.getDay()].slice(0,3)} · ${dataCurta(hoje)}</div></div>
+        <div class="chips" id="chipsHome">
+          <button class="chip on" onclick="filtrarHome('')">Todos</button>
+          ${db.barbeiros.map(b=>`<button class="chip" onclick="filtrarHome('${b.id}')">${b.nome.split(' ')[0]}</button>`).join('')}
+        </div>
+        <div class="slots" id="slotsHome"></div>
+        <div class="sum" id="sumHome"></div>
+        <button class="btn btn-g btn-block" style="margin-top:12px" onclick="abrirAgendamento()">Continuar para o pagamento</button>
+        <div class="fine">Cancelamento grátis até 2h antes</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marq"><div class="marqin">Corte na tesoura <i>✂</i> Barba terapia <i>✂</i> Navalhado <i>✂</i> Degradê <i>✂</i> Pigmentação <i>✂</i> Corte infantil <i>✂</i> Toalha quente <i>✂</i> Corte na tesoura <i>✂</i> Barba terapia <i>✂</i> Navalhado <i>✂</i> Degradê <i>✂</i> Pigmentação <i>✂</i> Corte infantil <i>✂</i> Toalha quente <i>✂</i></div></div>
+
+  <section class="sec"><div class="wrap">
+    <div class="sechead">
+      <div><div class="kicker">Serviços e preços</div><h2>Preço na tela.<br>Sem surpresa na cadeira.</h2></div>
+      <div class="right">Cada serviço mostra quanto custa e quanto tempo leva. O valor que aparece aqui é o mesmo que sai no comprovante.</div>
+    </div>
+    <div class="grid4">${db.servicos.map((s,i)=>cardServico(s,i)).join('')}</div>
+  </div></section>
+
+  <section class="sec tight"><div class="wrap">
+    <div class="sechead">
+      <div><div class="kicker">Quem vai te atender</div><h2>Escolha o barbeiro,<br>não só o horário.</h2></div>
+      <div class="right">Cada barbeiro tem agenda própria. Se o seu preferido estiver cheio, o site mostra o próximo horário livre dele.</div>
+    </div>
+    <div class="grid3">${db.barbeiros.map(b=>{
+      const n = proximoLivre(b.id);
+      return `<div class="card">
+        <div class="bhead"><div class="ava">${b.ini}</div><div><div class="bname">${b.nome}</div><div class="brole">${b.papel}</div></div></div>
+        <div class="bnext">
+          <div><div class="lbl">Próximo livre</div><div class="bnexttime">${n ? n.dia+', '+n.hora : 'sem vaga na semana'}</div></div>
+          <button class="btn btn-out" style="margin-left:auto;padding:10px 16px;font-size:13.5px" onclick="abrirAgendamento({barbeiro:'${b.id}'})">Agendar</button>
+        </div>
+      </div>`;
+    }).join('')}</div>
+  </div></section>
+
+  <section class="sec tight"><div class="wrap">
+    <div class="sechead"><div><div class="kicker">Assinatura mensal</div><h2>Clube Felismino:<br>seu corte já está pago.</h2></div>
+      <div class="right">Uma cobrança por mês, no cartão ou no Pix automático. O site avisa antes de cobrar e lembra você quando o pagamento não cair.</div></div>
+    <div class="plans">${db.planos.map(cardPlano).join('')}</div>
+  </div></section>
+
+  <section class="sec tight"><div class="wrap">
+    <div class="sechead"><div><div class="kicker">O que dizem</div><h2>4,9 de 5 em 312 avaliações</h2></div></div>
+    <div class="grid3">
+      ${[['Marquei às 22h de domingo pelo celular, paguei no Pix e na segunda cheguei e sentei. Não esperei um minuto.','Rafael A. · cliente há 2 anos'],
+         ['O Dedé cortou o cabelo do meu filho de 6 anos com uma paciência de santo. E dá pra escolher ele direto no site.','Juliana M. · primeira visita'],
+         ['Assinei o clube e nunca mais pensei em corte. A cobrança cai sozinha e ainda chega aviso antes.','Everton P. · assinante do clube']]
+        .map(([t,q])=>`<div class="card"><div class="starz">★★★★★</div><div class="rtxt">${t}</div><div class="rwho">${q}</div></div>`).join('')}
+    </div>
+  </div></section>`;
+};
+
+const cardServico = (s,i) => `
+  <div class="card">
+    <div class="cnum">${String(i+1).padStart(2,'0')} / ${s.tag}</div>
+    <div class="cname">${s.nome}</div>
+    <div class="cdesc">${s.desc}</div>
+    <div class="cfoot">
+      <div class="cprice">${BRL(s.preco)}</div><div class="cdur">${s.min} min</div>
+      <button class="cgo" aria-label="Agendar ${s.nome}" onclick="abrirAgendamento({servico:'${s.id}'})">→</button>
+    </div>
+  </div>`;
+
+const cardPlano = p => `
+  <div class="plan ${p.destaque?'destaque':''}">
+    ${p.destaque?'<div class="plan-tag">Mais assinado</div>':''}
+    <div class="plname">${p.nome}</div>
+    <div class="plprice">${BRL(p.preco).replace(',00','')}<small> /mês</small></div>
+    ${p.itens.map(i=>`<div class="plrow"><span class="tick">✓</span>${i}</div>`).join('')}
+    <div class="plfoot"><button class="btn ${p.destaque?'btn-g':'btn-dark'} btn-block" onclick="abrirAssinatura('${p.id}')">Assinar ${p.nome}</button></div>
+  </div>`;
+
+/* --------- painel de slots da home --------- */
+let filtroHome = '';
+let slotHome = null;
+function filtrarHome(id){
+  filtroHome = id; slotHome = null;
+  document.querySelectorAll('#chipsHome .chip').forEach((c,i)=>c.classList.toggle('on', (i===0&&!id) || c.textContent.toLowerCase().startsWith((brb(id)?.nome.split(' ')[0]||'###').toLowerCase())));
+  pintarSlots();
+}
+function pintarSlots(){
+  const cont = document.getElementById('slotsHome'); if(!cont) return;
+  const lista = livresDoDia(chaveData(hoje), filtroHome).slice(0,8);
+  cont.innerHTML = lista.map(s=>`
+    <button class="slot ${s.livre?'':'off'} ${slotHome===s.hora?'sel':''}" ${s.livre?'':'disabled'} onclick="escolherSlotHome('${s.hora}')">
+      <div class="t">${s.hora}</div>
+      <div class="p">${s.livre ? s.barbeiro.nome.split(' ')[0] : 'ocupado'}</div>
+    </button>`).join('');
+  const sel = lista.find(s=>s.hora===slotHome);
+  const s = srv('combo');
+  document.getElementById('sumHome').innerHTML = sel
+    ? `<div class="sumtxt"><b>${s.nome}</b> · ${s.min} min<br>${sel.hora} com ${sel.barbeiro.nome}</div><div class="sumprice">${BRL(s.preco)}</div>`
+    : `<div class="sumtxt"><b>Escolha um horário</b><br>o valor aparece aqui antes de pagar</div><div class="sumprice">—</div>`;
+  const p = proximoLivre();
+  const dn = document.getElementById('dockNext'); if(dn && p) dn.textContent = `${p.dia}, ${p.hora}`;
+}
+function escolherSlotHome(h){ slotHome = h; pintarSlots(); }
+
+/* ================= VIEW: SERVIÇOS ================= */
+VIEWS.servicos = () => `
+  <section class="appsec"><div class="wrap">
+    <div class="pagehead"><div><div class="kicker">Serviços</div><h2>Tudo o que a casa faz</h2></div></div>
+    <div class="grid4">${db.servicos.map(cardServico).join('')}</div>
+    <div class="box" style="margin-top:28px">
+      <h4>Como funciona o pagamento</h4>
+      <div class="boxsub">Você escolhe na hora de reservar. O horário só fica travado depois da confirmação.</div>
+      <div class="grid3">
+        <div class="item"><div><div class="itemname">Pix</div><div class="itemsub">confirma em segundos</div></div></div>
+        <div class="item"><div><div class="itemname">Cartão</div><div class="itemsub">crédito ou débito</div></div></div>
+        <div class="item"><div><div class="itemname">Na loja</div><div class="itemsub">reserva sem pagar antes</div></div></div>
+      </div>
+    </div>
+  </div></section>`;
+
+/* ================= VIEW: CLUBE ================= */
+VIEWS.clube = () => `
+  <section class="appsec"><div class="wrap">
+    <div class="pagehead">
+      <div><div class="kicker">Assinatura mensal</div><h2>Clube Felismino</h2></div>
+      <div class="right" style="margin-left:auto;max-width:360px;font-size:15px;color:var(--cinza-texto);line-height:1.6">Cobrança automática no cartão ou no Pix. Sem fidelidade — cancele pelo site a qualquer momento.</div>
+    </div>
+    <div class="plans">${db.planos.map(cardPlano).join('')}</div>
+
+    <div class="two" style="margin-top:26px">
+      <div class="box">
+        <h4>Como a cobrança é lembrada</h4>
+        <div class="boxsub">O site avisa antes, no dia e depois — sem ninguém precisar mandar mensagem na mão.</div>
+        ${regrasLembrete().map(r=>`
+          <div class="rule">
+            <div class="rulewhen">${r.quando}</div>
+            <div><div class="ruletxt"><b>${r.titulo}</b> — ${r.desc}</div><div class="msg">${r.msg}</div></div>
+          </div>`).join('')}
+      </div>
+      <div class="box">
+        <h4>Perguntas de sempre</h4>
+        <div class="boxsub">O que o cliente pergunta antes de assinar.</div>
+        ${[['Posso cancelar quando quiser?','Sim. O cancelamento é feito em Minha conta e vale a partir do próximo ciclo — os cortes já pagos continuam valendo.'],
+           ['E se eu não usar todos os cortes?','Um corte não usado passa para o mês seguinte, limitado a um por ciclo.'],
+           ['Posso trocar de plano?','Sim, a qualquer momento. A diferença é ajustada na próxima cobrança.'],
+           ['O Pix automático é seguro?','A cobrança recorrente é autorizada uma vez por você no banco e pode ser revogada lá ou aqui no site.']]
+          .map(([q,a])=>`<div class="item" style="align-items:flex-start;flex-direction:column;gap:8px"><div class="itemname">${q}</div><div style="font-size:14.5px;color:var(--cinza-texto);line-height:1.55">${a}</div></div>`).join('')}
+      </div>
+    </div>
+  </div></section>`;
+
+function regrasLembrete(){
+  const p = pln(db.assinatura.plano);
+  return [
+    {quando:'-3 dias', titulo:'Aviso de cobrança', desc:'WhatsApp e e-mail antes de qualquer débito.',
+     msg:`Oi, ${db.cliente.nome.split(' ')[0]}! Sua mensalidade do plano ${p.nome} (${BRL(p.preco)}) será cobrada em 22 de agosto. Se quiser trocar o cartão, é só responder.`},
+    {quando:'no dia', titulo:'Cobrança gerada', desc:'Pix copia e cola ou débito automático no cartão.',
+     msg:`Sua mensalidade de agosto está pronta: ${BRL(p.preco)}. Toque para pagar no Pix — leva 10 segundos.`},
+    {quando:'+2 dias', titulo:'Primeiro lembrete', desc:'Só dispara se o pagamento não cair.',
+     msg:`${db.cliente.nome.split(' ')[0]}, sua mensalidade de agosto ainda está em aberto. Seus cortes seguem liberados até dia 27.`},
+    {quando:'+5 dias', titulo:'Aviso de suspensão', desc:'Última mensagem antes de pausar o plano.',
+     msg:`Sem o pagamento até amanhã, o plano entra em pausa e os agendamentos passam a ser cobrados à vista. Qualquer coisa, chama a gente.`},
+    {quando:'-24h', titulo:'Lembrete do corte', desc:'Para todo agendamento, assinante ou não.',
+     msg:`Amanhã às 10:20 com Felismino, na Av. das Palmeiras, 480. Precisa remarcar? Responda REMARCAR.`}
+  ];
+}
+
+/* ================= VIEW: MINHA CONTA ================= */
+let abaConta = 'agendamentos';
+VIEWS.conta = () => {
+  const a = db.assinatura, p = pln(a.plano);
+  const pendente = a.ativa && a.status === 'pendente';
+  return `
+  <section class="appsec"><div class="wrap">
+    <div class="pagehead">
+      <div><div class="kicker">Minha conta</div><h2>Olá, ${db.cliente.nome.split(' ')[0]}</h2></div>
+      <button class="btn btn-dark" style="margin-left:auto" onclick="abrirAgendamento()">Novo agendamento</button>
+    </div>
+
+    ${pendente ? `<div class="aviso">
+      <div class="avisotxt"><b>Mensalidade de agosto em aberto — ${BRL(a.valor)}.</b><br>A cobrança venceu em 22 de agosto. Seus cortes seguem liberados até 27/08.</div>
+      <button class="btn btn-dark" style="margin-left:auto;flex-shrink:0" onclick="abrirPagamentoAssinatura()">Pagar agora</button>
+    </div>` : ''}
+
+    <div class="tabs">
+      ${[['agendamentos','Agendamentos'],['assinatura','Minha assinatura'],['lembretes','Lembretes'],['pagamentos','Pagamentos']]
+        .map(([k,r])=>`<button class="tab ${abaConta===k?'on':''}" onclick="abaConta='${k}';go('conta')">${r}</button>`).join('')}
+    </div>
+
+    ${abaConta==='agendamentos' ? blocoAgendamentos() : ''}
+    ${abaConta==='assinatura' ? blocoAssinatura() : ''}
+    ${abaConta==='lembretes' ? blocoLembretesCliente() : ''}
+    ${abaConta==='pagamentos' ? blocoPagamentos() : ''}
+  </div></section>`;
+};
+
+function blocoAgendamentos(){
+  const futuros = db.agendamentos.filter(a=>a.data >= chaveData(hoje));
+  const passados = db.agendamentos.filter(a=>a.data < chaveData(hoje));
+  const linha = a => {
+    const s = srv(a.servico), b = brb(a.barbeiro), [y,m,d] = a.data.split('-');
+    return `<div class="item">
+      <div class="itemtime">${a.hora}</div>
+      <div><div class="itemname">${s.nome} · ${b.nome.split(' ')[0]}</div><div class="itemsub">${d}/${m} · ${s.min} min · ${a.meio}</div></div>
+      <span class="tag ${a.pago?'pago':'pend'}">${a.pago?'pago '+BRL(a.valor):'a pagar'}</span>
+    </div>`;
+  };
+  return `<div class="two">
+    <div class="box">
+      <h4>Próximos cortes</h4><div class="boxsub">Cancelamento grátis até 2h antes do horário.</div>
+      ${futuros.length ? futuros.map(linha).join('') : '<div class="item"><div class="itemname">Nenhum corte marcado</div></div>'}
+      <button class="btn btn-out btn-block" style="margin-top:10px" onclick="abrirAgendamento()">Marcar outro horário</button>
+    </div>
+    <div class="box">
+      <h4>Histórico</h4><div class="boxsub">Tudo o que já passou pela cadeira.</div>
+      ${passados.map(linha).join('') || '<div class="item"><div class="itemname">Sem histórico ainda</div></div>'}
+    </div>
+  </div>`;
+}
+
+function blocoAssinatura(){
+  const a = db.assinatura, p = pln(a.plano);
+  if(!a.ativa) return `<div class="box"><h4>Você ainda não assina o clube</h4><div class="boxsub">Cortes por mês com cobrança automática e agenda prioritária.</div><button class="btn btn-g" onclick="go('clube')">Ver planos</button></div>`;
+  return `<div class="two">
+    <div class="box">
+      <h4>Plano ${p.nome} · ${BRL(p.preco)}/mês</h4>
+      <div class="boxsub">Assinante desde 14 de março de 2026 · ${a.meio}</div>
+      <div class="item"><div><div class="itemname">Cortes usados neste ciclo</div><div class="itemsub">${p.cortes}</div></div><span class="tag neutro">${a.usados} de 4</span></div>
+      <div class="item"><div><div class="itemname">Próxima cobrança</div><div class="itemsub">22 de agosto de 2026</div></div><span class="tag ${a.status==='pendente'?'pend':'pago'}">${a.status==='pendente'?'em aberto':'agendada'}</span></div>
+      <div class="item"><div><div class="itemname">Forma de pagamento</div><div class="itemsub">${a.meio} · autorizado no banco</div></div><span class="tag neutro">trocar</span></div>
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+        ${a.status==='pendente'?'<button class="btn btn-g" onclick="abrirPagamentoAssinatura()">Pagar mensalidade</button>':''}
+        <button class="btn btn-out" onclick="go('clube')">Trocar de plano</button>
+        <button class="btn btn-out" onclick="cancelarAssinatura()">Cancelar assinatura</button>
+      </div>
+    </div>
+    <div class="box">
+      <h4>O que está incluído</h4><div class="boxsub">Vale enquanto a mensalidade estiver em dia.</div>
+      ${p.itens.map(i=>`<div class="plrow"><span class="tick">✓</span>${i}</div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function blocoLembretesCliente(){
+  return `<div class="two">
+    <div class="box">
+      <h4>Lembretes programados para você</h4>
+      <div class="boxsub">Enviados por WhatsApp e e-mail. Você escolhe quais quer receber.</div>
+      ${regrasLembrete().map(r=>`<div class="rule"><div class="rulewhen">${r.quando}</div><div><div class="ruletxt"><b>${r.titulo}</b> — ${r.desc}</div><div class="msg">${r.msg}</div></div></div>`).join('')}
+    </div>
+    <div class="box">
+      <h4>Preferências de aviso</h4><div class="boxsub">Desligar o aviso de cobrança não cancela a cobrança.</div>
+      ${[['WhatsApp','ligado'],['E-mail','ligado'],['SMS','desligado'],['Lembrete do corte 24h antes','ligado'],['Aviso 3 dias antes da cobrança','ligado']]
+        .map(([n,v])=>`<div class="item"><div><div class="itemname">${n}</div></div><span class="tag ${v==='ligado'?'pago':'neutro'}">${v}</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function blocoPagamentos(){
+  const linhas = [
+    ['22 ago 2026','Mensalidade · Completo',129,'Pix automático','pendente'],
+    ['22 jul 2026','Mensalidade · Completo',129,'Pix automático','pago'],
+    ['22 jun 2026','Mensalidade · Completo',129,'Pix automático','pago'],
+    ['30 jul 2026','Corte social · avulso',45,'Crédito','pago'],
+    ['22 mai 2026','Mensalidade · Completo',129,'Cartão de crédito','pago']
+  ];
+  return `<div class="box">
+    <h4>Seus pagamentos</h4><div class="boxsub">Todo recibo fica guardado aqui e vai por e-mail.</div>
+    ${linhas.map(([d,desc,v,meio,st])=>`
+      <div class="item">
+        <div class="itemtime" style="width:86px;font-size:12px">${d}</div>
+        <div><div class="itemname">${desc}</div><div class="itemsub">${meio}</div></div>
+        <span class="tag ${st==='pago'?'pago':'pend'}">${st==='pago'?'pago '+BRL(v):'em aberto '+BRL(v)}</span>
+      </div>`).join('')}
+  </div>`;
+}
+
+/* ================= VIEW: PAINEL DA BARBEARIA ================= */
+let abaPainel = 'agenda';
+VIEWS.painel = () => {
+  const receitaAssin = db.clientesBase.length * 129;
+  return `
+  <section class="appsec"><div class="wrap">
+    <div class="pagehead"><div><div class="kicker">Painel interno</div><h2>Bom dia, Felismino</h2></div>
+      <div style="margin-left:auto" class="lbl">${DIAS[hoje.getDay()]}, ${hoje.getDate()} de agosto de 2026</div></div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="kpinum">9</div><div class="kpilbl">cortes marcados hoje</div></div>
+      <div class="kpi"><div class="kpinum">${BRL(receitaAssin).replace(',00','')}</div><div class="kpilbl">receita recorrente do mês</div></div>
+      <div class="kpi"><div class="kpinum">2</div><div class="kpilbl">mensalidades em aberto</div></div>
+      <div class="kpi"><div class="kpinum">78%</div><div class="kpilbl">ocupação da semana</div></div>
+    </div>
+
+    <div class="tabs">
+      ${[['agenda','Agenda do dia'],['assinantes','Assinantes'],['cobranca','Cobranças e lembretes']]
+        .map(([k,r])=>`<button class="tab ${abaPainel===k?'on':''}" onclick="abaPainel='${k}';go('painel')">${r}</button>`).join('')}
+    </div>
+
+    ${abaPainel==='agenda' ? painelAgenda() : ''}
+    ${abaPainel==='assinantes' ? painelAssinantes() : ''}
+    ${abaPainel==='cobranca' ? painelCobranca() : ''}
+  </div></section>`;
+};
+
+function painelAgenda(){
+  const dia = db.ocupados[chaveData(hoje)] || {};
+  const linhas = [];
+  db.barbeiros.forEach(b => (dia[b.id]||[]).forEach(h => linhas.push({h, b})));
+  linhas.sort((x,y)=>x.h.localeCompare(y.h));
+  const nomes = ['Caio B.','Silas R.','Juliana M.','Everton P.','Marcos V.','Iago L.','Pedro H.'];
+  return `<div class="two">
+    <div class="box">
+      <h4>Cadeiras de hoje</h4><div class="boxsub">Reservas confirmadas, com quem e como foi pago.</div>
+      ${linhas.map((l,i)=>`
+        <div class="item">
+          <div class="itemtime">${l.h}</div>
+          <div><div class="itemname">${nomes[i%nomes.length]} · ${db.servicos[i%3].nome}</div><div class="itemsub">${l.b.nome} · ${db.servicos[i%3].min} min</div></div>
+          <span class="tag ${i%4===3?'pend':'pago'}">${i%4===3?'paga na loja':'pago '+BRL(db.servicos[i%3].preco)}</span>
+        </div>`).join('')}
+    </div>
+    <div class="box">
+      <h4>Buracos na agenda</h4><div class="boxsub">Horários vazios de hoje — dá para oferecer no WhatsApp.</div>
+      ${livresDoDia(chaveData(hoje)).filter(s=>s.livre).slice(0,6).map(s=>`
+        <div class="item"><div class="itemtime">${s.hora}</div>
+          <div><div class="itemname">${s.barbeiro.nome.split(' ')[0]} livre</div><div class="itemsub">sem reserva</div></div>
+          <button class="btn btn-out" style="margin-left:auto;padding:9px 14px;font-size:13px" onclick="toast('Oferta enviada para a lista de espera.')">Oferecer</button>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function painelAssinantes(){
+  const cor = s => s==='em dia' ? 'pago' : (s==='pendente' ? 'pend' : 'pend');
+  return `<div class="box">
+    <h4>Clube Felismino · ${db.clientesBase.length} assinantes ativos</h4>
+    <div class="boxsub">Quem está em dia, quem vence esta semana e quem já passou do prazo.</div>
+    ${db.clientesBase.map(c=>`
+      <div class="item">
+        <div><div class="itemname">${c.nome}</div><div class="itemsub">plano ${c.plano} · vence ${c.venc}</div></div>
+        <span class="tag ${cor(c.status)}">${c.status}</span>
+        ${c.status!=='em dia' ? `<button class="btn btn-out" style="padding:9px 14px;font-size:13px" onclick="toast('Lembrete de cobrança enviado para ${c.nome.split(' ')[0]}.')">Cobrar</button>`:''}
+      </div>`).join('')}
+  </div>`;
+}
+
+function painelCobranca(){
+  const fila = [
+    ['hoje 18:00','Lembrete de corte','Caio B. · amanhã 10:20 com Kauã', `Oi Caio! Passando pra lembrar do seu corte amanhã às 10:20 com o Kauã, na ${CONFIG.endereco}. Precisa remarcar? É só responder.`],
+    ['hoje 19:00','Cobrança em aberto','Juliana M. · 7 dias de atraso', `Oi Juliana! Sua mensalidade do plano Essencial (R$ 89,00) está em aberto desde o dia 12. Posso te mandar o Pix?`],
+    ['amanhã 09:00','Aviso de cobrança','Everton P. · vence em 3 dias', `Oi Everton! Sua mensalidade do Ilimitado (R$ 189,00) vence dia 25. Qualquer coisa, chama aqui.`],
+    ['amanhã 12:00','Pix da mensalidade','Rafael A. · vencimento hoje', `Oi Rafael! Segue o Pix da mensalidade de agosto (R$ 129,00): ${codigoPix(129,'MENSALIDADE')}`]
+  ];
+  return `<div class="two">
+    <div class="box">
+      <h4>Régua de cobrança</h4><div class="boxsub">Os textos ficam prontos aqui. Você toca e o WhatsApp abre com a mensagem escrita.</div>
+      ${regrasLembrete().map(r=>`<div class="rule"><div class="rulewhen">${r.quando}</div><div><div class="ruletxt"><b>${r.titulo}</b> — ${r.desc}</div><div class="msg">${r.msg}</div></div></div>`).join('')}
+    </div>
+    <div class="box">
+      <h4>Fila de hoje</h4><div class="boxsub">Cada botão abre o WhatsApp com o texto pronto — sem custo de API.</div>
+      ${fila.map(([q,t,d,msg])=>`
+        <div class="item">
+          <div class="itemtime" style="width:92px;font-size:11.5px">${q}</div>
+          <div><div class="itemname">${t}</div><div class="itemsub">${d}</div></div>
+          <a class="btn btn-out" style="margin-left:auto;padding:9px 14px;font-size:13px;flex-shrink:0" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}">Abrir</a>
+        </div>`).join('')}
+      <div class="msg" style="margin-top:14px">Quando a barbearia quiser envio automático, o mesmo texto passa a sair sozinho pela API do WhatsApp — o resto do sistema não muda.</div>
+    </div>
+  </div>`;
+}
+
+/* ================= MODAL: AGENDAMENTO ================= */
+let flow = null;
+function abrirAgendamento(pre = {}){
+  flow = {passo:1, servico:pre.servico||null, barbeiro:pre.barbeiro||null, data:chaveData(hoje), hora:slotHome||null, meio:null, nome:db.cliente.nome, tel:db.cliente.tel};
+  renderFlow();
+}
+function fecharModal(){ document.getElementById('overlay').hidden = true; flow = null; }
+function abrirModal(html){
+  document.getElementById('modal').innerHTML = `<button class="close" onclick="fecharModal()" aria-label="Fechar">✕</button>` + html;
+  document.getElementById('overlay').hidden = false;
+}
+function passoFlow(n){
+  if(n===2 && !flow.servico) return toast('Escolha um serviço primeiro.');
+  if(n===4 && !flow.hora) return toast('Escolha um horário.');
+  flow.passo = n; renderFlow();
+}
+function setFlow(k,v){ flow[k]=v; if(k==='data'||k==='barbeiro') flow.hora=null; renderFlow(); }
+
+function renderFlow(){
+  const barras = n => `<div class="steps">${[1,2,3,4].map(i=>`<div class="step ${i<=n?'done':''}"></div>`).join('')}</div>`;
+  const s = flow.servico ? srv(flow.servico) : null;
+  const assinante = db.assinatura.ativa && db.assinatura.status !== 'atrasado';
+
+  if(flow.passo===1){
+    return abrirModal(`
+      <h3>O que você vai fazer?</h3>${barras(1)}
+      ${db.servicos.map(x=>`
+        <button class="opt ${flow.servico===x.id?'sel':''}" onclick="setFlow('servico','${x.id}')">
+          <div><div class="optname">${x.nome}</div><div class="optsub">${x.min} min · ${x.tag}</div></div>
+          <div class="optprice">${BRL(x.preco)}</div>
+        </button>`).join('')}
+      <div class="modalfoot"><button class="btn btn-g btn-block" onclick="passoFlow(2)">Escolher barbeiro</button></div>`);
+  }
+
+  if(flow.passo===2){
+    return abrirModal(`
+      <h3>Com quem?</h3>${barras(2)}
+      <button class="opt ${!flow.barbeiro?'sel':''}" onclick="setFlow('barbeiro',null)">
+        <div><div class="optname">Tanto faz</div><div class="optsub">mostra todos os horários livres</div></div></button>
+      ${db.barbeiros.map(b=>{
+        const n = proximoLivre(b.id);
+        return `<button class="opt ${flow.barbeiro===b.id?'sel':''}" onclick="setFlow('barbeiro','${b.id}')">
+          <div class="ava" style="width:46px;height:46px;border-radius:14px;font-size:17px">${b.ini}</div>
+          <div><div class="optname">${b.nome}</div><div class="optsub">${n?'próximo livre · '+n.dia+' '+n.hora:'agenda cheia'}</div></div>
+        </button>`;}).join('')}
+      <div class="modalfoot">
+        <button class="btn btn-out" onclick="passoFlow(1)">Voltar</button>
+        <button class="btn btn-g" style="flex:1" onclick="passoFlow(3)">Ver horários</button>
+      </div>`);
+  }
+
+  if(flow.passo===3){
+    const dias = [0,1,2,3,4].map(i=>maisDias(hoje,i));
+    const lista = livresDoDia(flow.data, flow.barbeiro);
+    return abrirModal(`
+      <h3>Quando fica bom?</h3>${barras(3)}
+      <div class="chips">${dias.map(d=>`
+        <button class="chip ${flow.data===chaveData(d)?'on':''}" onclick="setFlow('data','${chaveData(d)}')">
+          ${d.getTime()===hoje.getTime()?'Hoje':DIAS[d.getDay()].slice(0,3)} ${d.getDate()}
+        </button>`).join('')}</div>
+      <div class="slots">${lista.map(x=>`
+        <button class="slot ${x.livre?'':'off'} ${flow.hora===x.hora?'sel':''}" ${x.livre?'':'disabled'} onclick="setFlow('hora','${x.hora}')">
+          <div class="t">${x.hora}</div><div class="p">${x.livre?x.barbeiro.nome.split(' ')[0]:'ocupado'}</div>
+        </button>`).join('')}</div>
+      <div class="modalfoot">
+        <button class="btn btn-out" onclick="passoFlow(2)">Voltar</button>
+        <button class="btn btn-g" style="flex:1" onclick="passoFlow(4)">Continuar</button>
+      </div>`);
+  }
+
+  if(flow.passo===4){
+    const b = flow.barbeiro ? brb(flow.barbeiro) : livresDoDia(flow.data, null).find(x=>x.hora===flow.hora)?.barbeiro;
+    const [y,m,d] = flow.data.split('-');
+    const precoFinal = assinante && (flow.servico==='social'||flow.servico==='combo') ? 0 : s.preco;
+    return abrirModal(`
+      <h3>Confirmar e pagar</h3>${barras(4)}
+      <div class="sum" style="margin:0 0 14px">
+        <div class="sumtxt"><b>${s.nome}</b> · ${s.min} min<br>${d}/${m} às ${flow.hora} com ${b.nome}</div>
+        <div class="sumprice">${precoFinal===0?'incluso':BRL(precoFinal)}</div>
+      </div>
+      ${precoFinal===0 ? `<div class="aviso" style="margin-bottom:14px"><div class="avisotxt"><b>Seu plano cobre este corte.</b><br>É o 3º de 4 do ciclo. Nada é cobrado agora.</div></div>` : `
+      <div class="field"><label>Nome</label><input id="fNome" value="${flow.nome}"></div>
+      <div class="field"><label>WhatsApp — é por aqui que o lembrete chega</label><input id="fTel" value="${flow.tel}"></div>
+      <label class="lbl" style="display:block;margin:16px 0 8px">Como quer pagar</label>
+      <div class="paygrid">
+        ${[['pix','Pix','confirma na hora'],['credito','Crédito','em até 2x'],['debito','Débito','à vista'],['loja','Na loja','paga depois do corte']]
+          .map(([k,n,sub])=>`<button class="paybtn ${flow.meio===k?'sel':''}" onclick="setFlow('meio','${k}')"><b>${n}</b><div class="lbl" style="margin-top:6px">${sub}</div></button>`).join('')}
+      </div>`}
+      <div class="modalfoot">
+        <button class="btn btn-out" onclick="passoFlow(3)">Voltar</button>
+        <button class="btn btn-g" style="flex:1" onclick="confirmarAgendamento(${precoFinal})">${precoFinal===0?'Confirmar horário':'Confirmar e pagar '+BRL(precoFinal)}</button>
+      </div>
+      <div class="fine">Cancelamento grátis até 2h antes</div>`);
+  }
+}
+
+function confirmarAgendamento(valor){
+  if(valor>0 && !flow.meio) return toast('Escolha como quer pagar.');
+  if(valor>0 && flow.meio==='pix') return telaPix(valor, 'agendamento');
+  finalizarAgendamento(valor);
+}
+
+function finalizarAgendamento(valor){
+  const b = flow.barbeiro ? brb(flow.barbeiro) : livresDoDia(flow.data, null).find(x=>x.hora===flow.hora)?.barbeiro;
+  db.ocupados[flow.data] = db.ocupados[flow.data] || {};
+  db.ocupados[flow.data][b.id] = [...(db.ocupados[flow.data][b.id]||[]), flow.hora];
+  db.agendamentos.unshift({id:Date.now(), servico:flow.servico, barbeiro:b.id, data:flow.data, hora:flow.hora,
+    pago: valor>0 && flow.meio!=='loja', valor, meio: valor===0?'Plano':(flow.meio==='loja'?'Na loja':flow.meio==='pix'?'Pix':'Cartão')});
+  if(valor===0) db.assinatura.usados++;
+  const [y,m,d] = flow.data.split('-');
+  abrirModal(`
+    <div class="ok">
+      <div class="okmark">✓</div>
+      <h3 style="text-align:center">Horário confirmado</h3>
+      <p style="text-align:center;color:var(--cinza-texto);font-size:15.5px;line-height:1.6;margin-top:12px">
+        ${srv(flow.servico).nome} em ${d}/${m} às ${flow.hora}, com ${b.nome}.<br>
+        ${valor===0?'Coberto pelo seu plano.':(flow.meio==='loja'?'Você paga na barbearia depois do corte.':'Pagamento aprovado — recibo enviado por e-mail.')}
+      </p>
+      <div class="rule" style="text-align:left;margin-top:20px">
+        <div class="rulewhen">-24h</div>
+        <div><div class="ruletxt"><b>Coloque no seu calendário</b> — o aviso toca sozinho no celular</div>
+        <div class="msg">Amanhã às ${flow.hora} com ${b.nome.split(' ')[0]}, na ${CONFIG.endereco}. Precisa remarcar? Chame no WhatsApp.</div></div>
+      </div>
+      <div class="modalfoot">
+        <button class="btn btn-out" onclick="baixarAgenda('${flow.data}','${flow.hora}','${srv(flow.servico).nome}','${b.nome}',${srv(flow.servico).min})">Adicionar ao calendário</button>
+        <a class="btn btn-g" style="flex:1" target="_blank" rel="noopener" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(`Oi! Marquei ${srv(flow.servico).nome} dia ${d}/${m} às ${flow.hora} com ${b.nome}.`)}">Avisar no WhatsApp</a>
+      </div>
+      <button class="btn btn-dark btn-block" style="margin-top:10px" onclick="fecharModal();abaConta='agendamentos';go('conta')">Ver na minha conta</button>
+    </div>`);
+  setTimeout(()=>{ if(viewAtual==='home') pintarSlots(); }, 50);
+}
+
+/* ================= PIX (gerado no navegador, sem API) ================= */
+function crc16(str){
+  let crc = 0xFFFF;
+  for(let i=0;i<str.length;i++){
+    crc ^= str.charCodeAt(i) << 8;
+    for(let j=0;j<8;j++) crc = (crc & 0x8000) ? ((crc<<1) ^ 0x1021) & 0xFFFF : (crc<<1) & 0xFFFF;
+  }
+  return crc.toString(16).toUpperCase().padStart(4,'0');
+}
+const tlv = (id,v) => id + String(v.length).padStart(2,'0') + v;
+const semAcento = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
+
+function codigoPix(valor, txid='FELISMINO'){
+  let p = tlv('00','01')
+    + tlv('26', tlv('00','BR.GOV.BCB.PIX') + tlv('01', CONFIG.chavePix))
+    + tlv('52','0000') + tlv('53','986')
+    + (valor ? tlv('54', valor.toFixed(2)) : '')
+    + tlv('58','BR')
+    + tlv('59', semAcento(CONFIG.nomeRecebedor).slice(0,25))
+    + tlv('60', semAcento(CONFIG.cidadeRecebedor).slice(0,15))
+    + tlv('62', tlv('05', txid.slice(0,25)));
+  p += '6304';
+  return p + crc16(p);
+}
+
+function telaPix(valor, origem){
+  const codigo = codigoPix(valor, 'FB' + Date.now().toString().slice(-8));
+  const msg = encodeURIComponent(`Oi! Acabei de pagar ${BRL(valor)} no Pix ${origem==='assinatura'?'da mensalidade':'do meu agendamento'} — segue o comprovante.`);
+  abrirModal(`
+    <h3>Pague com Pix</h3>
+    <p style="color:var(--cinza-texto);font-size:15px;margin:10px 0 20px">Escaneie o código no app do banco ou copie o código abaixo. Depois é só avisar no WhatsApp — a barbearia confirma na hora.</p>
+    <div id="qrbox" class="qrbox"></div>
+    <div style="text-align:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;color:var(--verde-mata);margin-top:16px">${BRL(valor)}</div>
+    <div class="copiacola" id="pixCodigo">${codigo}</div>
+    <div class="modalfoot">
+      <button class="btn btn-out" onclick="copiarPix('${codigo}')">Copiar código</button>
+      <a class="btn btn-g" style="flex:1" target="_blank" rel="noopener" href="https://wa.me/${CONFIG.whatsapp}?text=${msg}">Enviar comprovante</a>
+    </div>
+    <button class="btn btn-out btn-block" style="margin-top:10px" onclick="${origem==='agendamento'?`finalizarAgendamento(${valor})`:`confirmarMensalidade()`}">Já paguei, continuar</button>
+    <div class="fine">O horário fica reservado por 15 minutos</div>`);
+  desenharQR(codigo);
+}
+
+function desenharQR(texto){
+  const box = document.getElementById('qrbox');
+  if(!box) return;
+  box.innerHTML = '';
+  if(typeof QRCode === 'undefined'){
+    box.innerHTML = '<div class="qrfallback">Sem internet para desenhar o QR — use o código copia e cola abaixo.</div>';
+    return;
+  }
+  new QRCode(box, {text: texto, width: 176, height: 176, colorDark:'#0C2A1E', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.M});
+}
+
+function copiarPix(codigo){
+  navigator.clipboard?.writeText(codigo).then(
+    ()=>toast('Código Pix copiado. Cole no app do banco.'),
+    ()=>toast('Selecione o código na tela e copie.')
+  );
+}
+
+/* ---- lembrete no calendário do próprio celular (.ics, sem custo) ---- */
+function baixarAgenda(data, hora, servico, barbeiro, minutos){
+  const ini = new Date(`${data}T${hora}:00`);
+  const fim = new Date(ini.getTime() + minutos*60000);
+  const z = d => d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+  const ics = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Felismino Barber//PT-BR','BEGIN:VEVENT',
+    `UID:${Date.now()}@felisminobarber`, `DTSTAMP:${z(new Date())}`,
+    `DTSTART:${z(ini)}`, `DTEND:${z(fim)}`,
+    `SUMMARY:${servico} — Felismino Barber`,
+    `LOCATION:${CONFIG.endereco}`,
+    `DESCRIPTION:Com ${barbeiro}. Cancelamento grátis até 2h antes.`,
+    'BEGIN:VALARM','TRIGGER:-PT24H','ACTION:DISPLAY','DESCRIPTION:Seu corte é amanhã','END:VALARM',
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+  a.download = 'corte-felismino.ics';
+  a.click();
+  toast('Lembrete salvo no calendário do seu celular.');
+}
+
+/* ================= ASSINATURA ================= */
+let planoEscolhido = null;
+function abrirAssinatura(id){
+  planoEscolhido = id;
+  const p = pln(id);
+  abrirModal(`
+    <h3>Assinar ${p.nome}</h3>
+    <p style="color:var(--cinza-texto);font-size:15px;margin:10px 0 18px">${BRL(p.preco)} por mês, sem fidelidade. Cancele pelo site quando quiser.</p>
+    ${p.itens.map(i=>`<div class="plrow"><span class="tick">✓</span>${i}</div>`).join('')}
+    <div class="field" style="margin-top:20px"><label>Nome completo</label><input value="${db.cliente.nome}"></div>
+    <div class="field"><label>WhatsApp para os avisos de cobrança</label><input value="${db.cliente.tel}"></div>
+    <label class="lbl" style="display:block;margin:16px 0 8px">Cobrança automática todo dia 22</label>
+    <div class="paygrid">
+      <button class="paybtn sel"><b>Pix automático</b><div class="lbl" style="margin-top:6px">autoriza uma vez no banco</div></button>
+      <button class="paybtn"><b>Cartão de crédito</b><div class="lbl" style="margin-top:6px">débito recorrente</div></button>
+    </div>
+    <div class="rule"><div class="rulewhen">-3 dias</div><div><div class="ruletxt"><b>Você é avisado antes de cada cobrança</b></div>
+      <div class="msg">Nada é debitado de surpresa: o aviso chega três dias antes por WhatsApp e e-mail.</div></div></div>
+    <div class="modalfoot"><button class="btn btn-g btn-block" onclick="confirmarAssinatura()">Assinar por ${BRL(p.preco)}/mês</button></div>`);
+}
+function confirmarAssinatura(){
+  const p = pln(planoEscolhido) || db.planos.find(x=>x.destaque);
+  db.assinatura = {ativa:true, plano:p.id, desde:chaveData(hoje), proximaCobranca:'2026-09-22', valor:p.preco, meio:'Pix automático', status:'em dia', usados:0};
+  abrirModal(`
+    <div class="ok">
+      <div class="okmark">✓</div>
+      <h3 style="text-align:center">Bem-vindo ao clube</h3>
+      <p style="text-align:center;color:var(--cinza-texto);font-size:15.5px;line-height:1.6;margin-top:12px">
+        Plano ${p.nome} ativo. A primeira cobrança de ${BRL(p.preco)} sai hoje e depois todo dia 22.
+      </p>
+      <div class="modalfoot"><button class="btn btn-g btn-block" onclick="fecharModal();abaConta='assinatura';go('conta')">Ver minha assinatura</button></div>
+    </div>`);
+}
+function abrirPagamentoAssinatura(){ telaPix(db.assinatura.valor, 'assinatura'); }
+function confirmarMensalidade(){
+  db.assinatura.status = 'em dia';
+  fecharModal(); go('conta');
+  toast('Mensalidade paga. Recibo enviado por e-mail e WhatsApp.');
+}
+function cancelarAssinatura(){
+  abrirModal(`
+    <h3>Cancelar assinatura?</h3>
+    <p style="color:var(--cinza-texto);font-size:15px;margin:12px 0 18px;line-height:1.6">
+      O plano fica ativo até o fim do ciclo atual e não há nova cobrança. Os cortes já pagos continuam valendo.
+    </p>
+    <div class="modalfoot">
+      <button class="btn btn-out" style="flex:1" onclick="fecharModal()">Continuar assinante</button>
+      <button class="btn btn-dark" onclick="db.assinatura.ativa=false;fecharModal();go('conta');toast('Assinatura cancelada. Sem nova cobrança.')">Cancelar mesmo assim</button>
+    </div>`);
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') fecharModal(); });
+go('home');
+</script>
+</body>
+</html>
