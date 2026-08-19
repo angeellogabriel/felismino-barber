@@ -327,8 +327,8 @@ button{font-family:inherit}
         <div class="fbig">Seu horário<br>está aberto.</div>
         <button class="btn btn-w" onclick="abrirAgendamento()">Agendar em 30 segundos</button>
       </div>
-      <div><div class="ftitle">Horários</div><div class="ftxt">Terça a sexta · 9h às 20h<br>Sábado · 8h às 19h<br>Domingo e segunda · fechado</div></div>
-      <div><div class="ftitle">Onde ficamos</div><div class="ftxt">Av. das Palmeiras, 480 — Centro<br>WhatsApp (00) 00000-0000<br>@felisminobarber</div></div>
+      <div><div class="ftitle">Horários</div><div class="ftxt">Segunda a sábado · 9h às 21h<br>Domingo · 11h as 16h</div></div>
+      <div><div class="ftitle">Onde ficamos</div><div class="ftxt">R. V17 - Park Carajás, Canaã dos Carajás - PA<br>WhatsApp (85) 99451-7899<br>@felisminobarber</div></div>
       <div><div class="ftitle">Pagamento</div><div class="ftxt">Pix, crédito, débito e carteira digital.<br>Assinatura com cobrança automática.<br>Pagou online? É só chegar e sentar.</div></div>
     </div>
     <div class="fbot"><span>Felismino Barber © 2026</span><span>Agendamento · Pagamento online · Clube de assinatura</span></div>
@@ -356,11 +356,11 @@ button{font-family:inherit}
    a chave Pix é a da própria conta e o WhatsApp é o número normal.
    --------------------------------------------------------------------- */
 const CONFIG = {
-  chavePix: 'felismino@email.com',        // e-mail, CPF/CNPJ, telefone ou aleatória
+  chavePix: 'afelismino662@gmail.com',        // e-mail, CPF/CNPJ, telefone ou aleatória
   nomeRecebedor: 'Felismino Barber',
   cidadeRecebedor: 'Canaa dos Carajas',   // sem acento, até 15 caracteres
-  whatsapp: '5594991234567',              // 55 + DDD + número, só dígitos
-  endereco: 'Av. das Palmeiras, 480 — Centro'
+  whatsapp: '5585994517899',              // 55 + DDD + número, só dígitos
+  endereco: 'R. V17 - Park Carajás, Canaã dos Carajás - PA'
 };
 
 const BRL = n => 'R$ ' + n.toFixed(2).replace('.', ',');
@@ -378,9 +378,7 @@ const db = {
     {id:'pigmento', nome:'Pigmentação', desc:'Preenche falhas e marca o contorno. Dura de duas a três semanas.', preco:55, min:45, tag:'disfarça falhas'}
   ],
   barbeiros: [
-    {id:'felismino', nome:'Felismino Silva', ini:'FS', papel:'Fundador · navalha e barba'},
-    {id:'kaua', nome:'Kauã Ribeiro', ini:'KR', papel:'Degradê e freestyle'},
-    {id:'dede', nome:'Dedé Martins', ini:'DM', papel:'Clássico e infantil'}
+    {id:'felismino', nome:'Felismino Silva', ini:'FS', papel:'Fundador e Barbeiro · todos os tipos de corte e barba'}
   ],
   planos: [
     {id:'essencial', nome:'Essencial', preco:89, cortes:'2 cortes por mês', itens:['2 cortes por mês','Agenda com 7 dias de antecedência','5% off em pomadas e óleos']},
@@ -389,9 +387,9 @@ const db = {
   ],
   // agenda: chave = 'YYYY-MM-DD' -> horários ocupados por barbeiro
   ocupados: {
-    '2026-08-19': {felismino:['09:00','10:20','16:00'], kaua:['09:40','14:20'], dede:['13:00','15:40']},
-    '2026-08-20': {felismino:['11:00'], kaua:['09:00','09:40'], dede:['16:40']},
-    '2026-08-21': {felismino:['09:00','09:40','10:20'], kaua:['13:00'], dede:[]}
+    '2026-08-19': {felismino:['09:00','10:20','16:00']},
+    '2026-08-20': {felismino:['11:00']},
+    '2026-08-21': {felismino:['09:00','09:40','10:20']}
   },
   horarios: ['09:00','09:40','10:20','11:00','13:00','13:40','14:20','15:00','15:40','16:20','17:00','17:40'],
   // cliente logado (demo)
